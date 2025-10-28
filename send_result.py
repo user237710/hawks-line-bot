@@ -1,8 +1,31 @@
 import requests
+from bs4 import BeautifulSoup
 
 def get_hawks_result():
-    # ここでAPIやスクレイピングで試合結果を取得
-    return "今日はオリックスとの対戦！2-3でオリックスの勝利。まけほー"
+    url = "https://baseball.yahoo.co.jp/npb/teams/30/schedule"
+    res = requests.get(url)
+    soup = BeautifulSoup(res.text, "html.parser")
+
+    latest_game = soup.select_one("tr.bb-score__row")
+    if not latest_game:
+        return "試合情報が取得できませんでした"
+
+    opponent = latest_game.select_one(".bb-score__team--away").get_text(strip=True)
+    score = latest_game.select_one(".bb-score__score").get_text(strip=True)
+
+    try:
+        hawks_score, opp_score = map(int, score.split("-"))
+    except:
+        return "スコアの取得に失敗しました"
+
+    if hawks_score > opp_score:
+        result = "たかほー！"
+    elif hawks_score < opp_score:
+        result = "まけほー"
+    else:
+        result = "引き分けでした"
+
+    return f"今日は{opponent}との対戦！{score}でホークスの{result}"
 
 def send_line_message(text):
     url = "https://api.line.me/v2/bot/message/broadcast"
