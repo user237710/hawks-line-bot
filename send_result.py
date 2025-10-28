@@ -1,3 +1,4 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 
@@ -6,6 +7,7 @@ def get_hawks_result():
     res = requests.get(url)
     soup = BeautifulSoup(res.text, "html.parser")
 
+    # 最新の試合（直近の試合行を取得）
     latest_game = soup.select_one("tr.bb-score__row")
     if not latest_game:
         return "試合情報が取得できませんでした"
@@ -30,7 +32,7 @@ def get_hawks_result():
 def send_line_message(text):
     url = "https://api.line.me/v2/bot/message/broadcast"
     headers = {
-        "Authorization": "Bearer " + "<LINE_TOKEN>",
+        "Authorization": "Bearer " + os.environ["LINE_TOKEN"],  # Secretsから読み込み
         "Content-Type": "application/json"
     }
     payload = {
