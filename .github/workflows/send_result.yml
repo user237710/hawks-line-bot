@@ -2,7 +2,7 @@ name: Send Hawks Result
 
 on:
   schedule:
-    - cron: '30 12 * * *'  # 日本時間21:30に実行（UTC換算）
+    - cron: '0 13 * * *'  # 日本時間22:00に実行（UTC換算）
   workflow_dispatch:        # 手動実行も可能
 
 jobs:
